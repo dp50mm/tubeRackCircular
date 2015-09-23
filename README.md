@@ -4,7 +4,7 @@ This is an openscad script to generate circular tube racks.
 
 # examples
 
-![alt text](https://raw.githubusercontent.com/dp50mm/tubeRackCircular/master/images/tubeRackCircular9.png =600px "Logo Title Text 1")
+![alt text](https://raw.githubusercontent.com/dp50mm/tubeRackCircular/master/images/tubeRackCircular9.png "Logo Title Text 1")
 
 Pretty much every dimension of the tube rack can be parametrically changed.
 
