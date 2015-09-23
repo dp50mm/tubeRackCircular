@@ -3,8 +3,14 @@
 This is an openscad script to generate circular tube racks.
 
 # examples
+renders in openscad of the rack
 
+## 9 tubes
 ![alt text](https://raw.githubusercontent.com/dp50mm/tubeRackCircular/master/images/tubeRackCircular9.png "Logo Title Text 1")
+### 16 tubes
+![alt text](https://raw.githubusercontent.com/dp50mm/tubeRackCircular/master/images/tubeRackCircular16.png "Logo Title Text 1")
+### 27 tubes
+![alt text](https://raw.githubusercontent.com/dp50mm/tubeRackCircular/master/images/tubeRackCircular27.png "Logo Title Text 1")
 
 Pretty much every dimension of the tube rack can be parametrically changed.
 
