@@ -2,7 +2,7 @@
 // total number 
 
 tubesPerSegment = 3; // at least 2
-numberOfSegments = 9; // at least 2
+numberOfSegments = 5; // at least 2
 
 // CALCULATED
 totalNumberOfTubes = tubesPerSegment * numberOfSegments;
@@ -47,34 +47,34 @@ connectionPadding = boltDiameter * 3;
 PI = 3.14159265359;
 
 // Calculated vars
-rackTubeCenterLinePerimeter = totalNumberOfTubes*(tubeRadius*2+totalPadding);
-echo(str("outline distance: ",rackTubeCenterLinePerimeter,"mm"));
+tubeCircleCenterLinePerimeter = totalNumberOfTubes*(tubeRadius*2+totalPadding);
+echo(str("outline distance: ",tubeCircleCenterLinePerimeter,"mm"));
 
-rackTubeCenterLineRadius = (rackTubeCenterLinePerimeter/PI)/2;
-echo(str("tube center line radius: ",rackTubeCenterLineRadius,"mm"));
+tubeCircleCenterLineRadius = (tubeCircleCenterLinePerimeter/PI)/2;
+echo(str("tube center line radius: ",tubeCircleCenterLineRadius,"mm"));
 
-rackTubeCenterLineDiameter = rackTubeCenterLineRadius*2;
+tubeCircleCenterLineDiameter = tubeCircleCenterLineRadius*2;
 
-rackInnerRadius = rackTubeCenterLineRadius-tubeRadius-totalPadding;
-rackInnerDiameter = rackInnerRadius*2;
-rackOuterRadius = rackTubeCenterLineRadius+tubeRadius+totalPadding;
-rackOuterDiameter = rackOuterRadius*2;
+rackRingInnerRadius = tubeCircleCenterLineRadius-tubeRadius-totalPadding;
+rackRingInnerDiameter = rackRingInnerRadius*2;
+rackRingOuterRadius = tubeCircleCenterLineRadius+tubeRadius+totalPadding;
+rackRingOuterDiameter = rackRingOuterRadius*2;
 
 
 
 module mainCircle(dimensions) {
     difference() {
         if(dimensions == "3D") {
-            cylinder(materialThickness, rackOuterRadius, rackOuterRadius, $fn=100);
+            cylinder(materialThickness, rackRingOuterRadius, rackRingOuterRadius, $fn=100);
         } else if(dimensions == "2D") {
-            circle(rackOuterRadius, $fn=100);
+            circle(rackRingOuterRadius, $fn=100);
         }
         if(dimensions == "3D") {
             translate([0,0,-0.5]) {
-                cylinder(materialThickness+1, rackInnerRadius, rackInnerRadius, $fn=100);
+                cylinder(materialThickness+1, rackRingInnerRadius, rackRingInnerRadius, $fn=100);
             }
         } else if(dimensions == "2D") {
-            circle(rackInnerRadius, $fn=100);
+            circle(rackRingInnerRadius, $fn=100);
         }
     }
 }
@@ -83,7 +83,7 @@ module testTubes(dimensions) {
     union() {
         for (i = [1:totalNumberOfTubes]) {
             rotate([0,0,(360/totalNumberOfTubes)*i]) {
-                translate([rackTubeCenterLineRadius,0,0]) {
+                translate([tubeCircleCenterLineRadius,0,0]) {
                     if(dimensions == "3D") {
                         translate([0,0,-materialThickness*2]) {
                             cylinder(materialThickness*4,tubeRadius,tubeRadius);
@@ -148,7 +148,7 @@ module cutOutsCircular(dimensions) {
         rotation = 360/totalNumberOfTubes;
         for (i = [1:totalNumberOfTubes]) {
             rotate([0,0,rotation*i+rotation/2]) {
-                translate([rackTubeCenterLineRadius,0,0]) {
+                translate([tubeCircleCenterLineRadius,0,0]) {
                     spacerCutOut(dimensions);
                 }
             }
@@ -156,7 +156,7 @@ module cutOutsCircular(dimensions) {
     }
 }
 
-module holderCircle(dimensions) {
+module holderRing(dimensions) {
     difference() {
         mainCircle(dimensions);
         testTubes(dimensions);
@@ -255,7 +255,7 @@ module bottomHolderSpacerRing(dimensions) {
     segmentAngle = 360/numberOfSegments;
     for(i = [1:numberOfSegments]) {
         rotate([0,0,segmentAngle*i+tubeAngle/2]) {
-            translate([rackTubeCenterLineRadius,0,bottomHolderZPosition/2+materialThickness]){
+            translate([tubeCircleCenterLineRadius,0,bottomHolderZPosition/2+materialThickness]){
                 rotate([0,90,90]) {
                     translate([-bottomHolderZPosition/2,
                         -tubeRadius-totalPadding,
@@ -279,7 +279,7 @@ module topHolderSpacerRing(dimensions) {
         echo(str("divided: ",divided));
         if(floored != divided) {
             rotate([0,0,tubeAngle*i+tubeAngle/2]) {
-                translate([rackTubeCenterLineRadius,0,bottomHolderZPosition/2+materialThickness]){
+                translate([tubeCircleCenterLineRadius,0,bottomHolderZPosition/2+materialThickness]){
                     rotate([0,90,90]) {
                         translate([-bottomHolderZPosition/2,
                             -tubeRadius-totalPadding,
@@ -297,10 +297,10 @@ module topHolderSpacerRing(dimensions) {
 module circularRack3D(dimensions) {
     bottomPlate(dimensions);
     translate([0,0,bottomHolderZPosition]) {
-        holderCircle(dimensions);
+        holderRing(dimensions);
     }
     translate([0,0,holderHeight]) {
-        holderCircle(dimensions);
+        holderRing(dimensions);
     }
     bottomHolderSpacerRing(dimensions);
     translate([0,0,holderHeight/2+bottomHolderZPosition-materialThickness*2]) {
@@ -311,11 +311,11 @@ module circularRack3D(dimensions) {
 module circularRackFlat(dimensions) {
     // bottomplate
     bottomPlate(dimensions);
-    translate([rackOuterDiameter+laserCutPieceSpacing,0,0]) {
-        holderCircle(dimensions);
-        translate([rackOuterDiameter+laserCutPieceSpacing,0,0]) {
-            holderCircle(dimensions);
-            translate([rackOuterDiameter/2+laserCutPieceSpacing,0,0]) {
+    translate([rackRingOuterDiameter+laserCutPieceSpacing,0,0]) {
+        holderRing(dimensions);
+        translate([rackRingOuterDiameter+laserCutPieceSpacing,0,0]) {
+            holderRing(dimensions);
+            translate([rackRingOuterDiameter/2+laserCutPieceSpacing,0,0]) {
                 // lower spacers = number of segments
                 lowerSpacerCount = numberOfSegments;
                 // upper spacers 
@@ -337,6 +337,5 @@ module circularRackFlat(dimensions) {
 }
 
 
-circularRack3D("3D");
-//circularRackFlat("2D");
-
+//circularRack3D("3D");
+circularRackFlat("2D");
